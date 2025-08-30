@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reti e Sistemi IT - Guida Completa</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .logo:hover {
+            color: #764ba2;
+        }
+
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            width: 25px;
+            height: 20px;
+            justify-content: space-between;
+        }
+
+        .hamburger span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background: #333;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        .nav-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            height: 100vh;
+            width: 300px;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(15px);
+            display: flex;
+            flex-direction: column;
+            padding: 6rem 2rem 2rem;
+            transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: -5px 0 20px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+        }
+
+        .nav-menu.active {
+            right: 0;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #333;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-menu a:hover {
+            color: #667eea;
+            transform: translateX(10px);
+        }
+
+        .nav-menu a::before {
+            content: "→";
+            margin-right: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-menu a:hover::before {
+            opacity: 1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 6rem 1rem 2rem;
+        }
+
+        .slide {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            animation: slideIn 0.6s ease;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide h2 {
+            color: #667eea;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-size: 2rem;
+        }
+
+        .network-diagram {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .network-item {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            transform: translateY(0);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .network-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .network-item h3 {
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .network-item .example {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+            font-family: monospace;
+        }
+
+        .backup-timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .backup-timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, #667eea, #764ba2);
+            transform: translateX(-50%);
+        }
+
+        .backup-item {
+            position: relative;
+            width: 45%;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .backup-item:hover {
+            transform: scale(1.05);
+        }
+
+        .backup-item:nth-child(odd) {
+            left: 0;
+            margin-left: 0;
+        }
+
+        .backup-item:nth-child(even) {
+            left: 55%;
+            margin-left: 0;
+        }
+
+        .backup-item::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 20px;
+            height: 20px;
+            background: #667eea;
+            border-radius: 50%;
+            transform: translateY(-50%);
+        }
+
+        .backup-item:nth-child(odd)::after {
+            right: -31px;
+        }
+
+        .backup-item:nth-child(even)::after {
+            left: -31px;
+        }
+
+        .backup-item h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .step-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .step {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step::before {
+            content: attr(data-step);
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .top-button {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            z-index: 500;
+            opacity: 0;
+            transform: translateY(100px);
+        }
+
+        .top-button.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .top-button:hover {
+            background: #764ba2;
+            transform: translateY(-5px);
+        }
+
+        .installation-steps {
+            counter-reset: step-counter;
+        }
+
+        .installation-step {
+            counter-increment: step-counter;
+            background: white;
+            margin: 1rem 0;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            padding-left: 4rem;
+        }
+
+        .installation-step::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 2rem;
+            height: 2rem;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1rem 0;
+            border-left: 5px solid #ff6b35;
+        }
+
+        /* HERO CARDS - NUOVA IMPLEMENTAZIONE */
+        .hero-cards-container {
+            display: block;
+            width: 100%;
+            margin: 3rem 0;
+        }
+
+        .hero-cards-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .hero-card {
+            flex: 0 1 calc(33.333% - 2rem);
+            min-width: 280px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .hero-card:hover::before {
+            left: 100%;
+        }
+
+        .hero-card:hover {
+            transform: translateY(-15px) scale(1.03);
+            box-shadow: 0 20px 50px rgba(102, 126, 234, 0.3);
+            border-color: rgba(102, 126, 234, 0.5);
+            z-index: 10;
+        }
+
+        .hero-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .hero-card h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .hero-card p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-arrow {
+            position: absolute;
+            bottom: 1rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            color: #667eea;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+
+        .hero-card:hover .hero-arrow {
+            opacity: 1;
+            transform: translateX(5px);
+        }
+
+        .hero-card:active {
+            transform: translateY(-10px) scale(1.01);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+
+            .container {
+                padding: 5rem 0.5rem 2rem;
+            }
+
+            .slide {
+                padding: 1.5rem;
+                margin: 1rem 0;
+                border-radius: 15px;
+            }
+
+            .slide h2 {
+                font-size: 1.5rem;
+            }
+
+            .network-diagram {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .backup-timeline::before {
+                left: 20px;
+            }
+
+            .backup-item {
+                width: calc(100% - 60px);
+                left: 40px !important;
+            }
+
+            .backup-item::after {
+                left: -31px !important;
+            }
+
+            .step-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .installation-step {
+                padding-left: 3rem;
+            }
+
+            .nav-menu {
+                width: 100%;
+                right: -100%;
+            }
+
+            .hero-cards-row {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .hero-card {
+                flex: 1 1 100%;
+                min-width: auto;
+                padding: 1.5rem;
+                border-radius: 15px;
+                min-height: 200px;
+            }
+
+            .hero-card:hover {
+                transform: translateY(-10px) scale(1.02);
+            }
+
+            .hero-icon {
+                font-size: 2.5rem;
+            }
+
+            .hero-card h3 {
+                font-size: 1.3rem;
+            }
+
+            .hero-arrow {
+                bottom: 1rem;
+                right: 1rem;
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo" onclick="goHome()">IT Systems Guide</div>
+        <div class="hamburger" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </header>
+
+    <nav class="nav-menu">
+        <a href="#" onclick="showSlide('home')">🏠 Home</a>
+        <a href="#" onclick="showSlide('networking')">🌐 Reti e IP</a>
+        <a href="#" onclick="showSlide('backup')">💾 Tipi di Backup</a>
+        <a href="#" onclick="showSlide('users')">👤 Utenti Windows</a>
+        <a href="#" onclick="showSlide('windows-install')">💻 Installazione Windows 10</a>
+        <a href="#" onclick="showSlide('office-install')">📊 Installazione Office</a>
+        <a href="#" onclick="showSlide('backup-restore')">🔄 Ripristino Backup</a>
+        <a href="#" onclick="showSlide('network-config')">⚙️ Configurazione Rete</a>
+    </nav>
+
+    <div class="container">
+        <!-- Home Slide -->
+        <div id="home" class="slide active">
+            <h2>🚀 Guida Completa ai Sistemi IT</h2>
+            <div class="highlight-box">
+                <h3>Benvenuto nella guida interattiva!</h3>
+                <p>Esplora tutti gli aspetti fondamentali dei sistemi informatici attraverso card interattive. Ogni sezione è progettata per fornirti una comprensione chiara e pratica degli argomenti trattati.</p>
+            </div>
+            
+            <div class="hero-cards-container">
+                <div class="hero-cards-row">
+                    <div class="hero-card" onclick="showSlide('networking')">
+                        <div class="hero-icon">🌐</div>
+                        <h3>Reti e IP</h3>
+                        <p>Scopri indirizzi IP, subnet mask, gateway e DNS con diagrammi chiari e esempi pratici</p>
+                        <div class="hero-arrow">→</div>
+                    </div>
+                    
+                    <div class="hero-card" onclick="showSlide('backup')">
+                        <div class="hero-icon">💾</div>
+                        <h3>Tipi di Backup</h3>
+                        <p>Comprendi le differenze tra backup completo, incrementale e differenziale con timeline visuale</p>
+                        <div class="hero-arrow">→</div>
+                    </div>
+                    
+                    <div class="hero-card" onclick="showSlide('users')">
+                        <div class="hero-icon">👤</div>
+                        <h3>Utenti Windows</h3>
+                        <p>Tutte le modalità per creare utenti Windows e gestire account e permessi del sistema</p>
+                        <div class="hero-arrow">→</div>
+                    </div>
+                </div>
+
+                <div class="hero-cards-row">
+                    <div class="hero-card" onclick="showSlide('windows-install')">
+                        <div class="hero-icon">💻</div>
+                        <h3>Installazione Windows 10</h3>
+                        <p>Guida step-by-step completa per installare Windows 10 da zero con tutte le configurazioni</p>
+                        <div class="hero-arrow">→</div>
+                    </div>
+                    
+                    <div class="hero-card" onclick="showSlide('office-install')">
+                        <div class="hero-icon">📊</div>
+                        <h3>Installazione Office</h3>
+                        <p>Procedure complete for installing Microsoft Office in different available modes</p>
+                        <div class="hero-arrow">→</div>
+                    </div>
+                    
+                    <div class="hero-card" onclick="showSlide('backup-restore')">
+                        <div class="hero-icon">🔄</div>
+                        <h3>Ripristino Backup</h3>
+                        <p>Come ripristinare da backup e procedure di recovery per situazioni di emergenza del sistema</p>
+                        <div class="hero-arrow">→</div>
+                    </div>
+                </div>
+
+                <div class="hero-cards-row">
+                    <div class="hero-card" onclick="showSlide('network-config')">
+                        <div class="hero-icon">⚙️</div>
+                        <h3>Configurazione Rete</h3>
+                        <p>Setup completo di una rete domestica con router, WiFi, sicurezza e risoluzione problemi</p>
+                        <div class="hero-arrow">→</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Networking Slide -->
+        <div id="networking" class="slide">
+            <h2>🌐 Indirizzi IP e Configurazione di Rete</h2>
+            <div class="network-diagram">
+                <div class="network-item">
+                    <h3>📍 Indirizzo IP</h3>
+                    <p><strong>Definizione:</strong> Identificatore univoco del dispositivo nella rete</p>
+                    <div class="example">192.168.1.100</div>
+                    <p>32 bit divisi in 4 ottetti, identifica l'host all'interno della rete</p>
+                </div>
+                <div class="network-item">
+                    <h3>🎭 Subnet Mask</h3>
+                    <p><strong>Definizione:</strong> Definisce la porzione di rete e host dell'IP</p>
+                    <div class="example">255.255.255.0</div>
+                    <p>Separa l'indirizzo di rete dall'indirizzo dell'host, determina la dimensione della subnet</p>
+                </div>
+                <div class="network-item">
+                    <h3>🚪 Gateway</h3>
+                    <p><strong>Definizione:</strong> Punto di accesso verso altre reti</p>
+                    <div class="example">192.168.1.1</div>
+                    <p>Router che connette la rete locale a Internet, gestisce il traffico inter-rete</p>
+                </div>
+                <div class="network-item">
+                    <h3>🔍 DNS</h3>
+                    <p><strong>Definizione:</strong> Traduce nomi di dominio in indirizzi IP</p>
+                    <div class="example">8.8.8.8</div>
+                    <p>Risolve www.google.com in 172.217.16.164, essenziale per la navigazione web</p>
+                </div>
+            </div>
+            <div class="highlight-box">
+                <h3>🔗 Differenze Chiave:</h3>
+                <p><strong>IP:</strong> Identifica IL dispositivo | <strong>Subnet Mask:</strong> Definisce LA rete | <strong>Gateway:</strong> Collega LE reti | <strong>DNS:</strong> Traduce I nomi</p>
+            </div>
+        </div>
+
+        <!-- Backup Slide -->
+        <div id="backup" class="slide">
+            <h2>💾 Strategie di Backup</h2>
+            <div class="backup-timeline">
+                <div class="backup-item">
+                    <h3>🔴 Backup Completo (Full)</h3>
+                    <p><strong>Caratteristiche:</strong> Copia TUTTI i file e cartelle</p>
+                    <p><strong>Vantaggi:</strong> Ripristino veloce, copia completa</p>
+                    <p><strong>Svantaggi:</strong> Richiede più tempo e spazio</p>
+                    <p><strong>Frequenza:</strong> Settimanale o mensile</p>
+                    <div class="example">Lunedì: 100GB di dati</div>
+                </div>
+                <div class="backup-item">
+                    <h3>🟡 Backup Incrementale</h3>
+                    <p><strong>Caratteristiche:</strong> Copia solo i file MODIFICATI dall'ultimo backup</p>
+                    <p><strong>Vantaggi:</strong> Veloce, occupa poco spazio</p>
+                    <p><strong>Svantaggi:</strong> Ripristino più lento (serve catena completa)</p>
+                    <p><strong>Frequenza:</strong> Giornaliera</p>
+                    <div class="example">Martedì: +2GB, Mercoledì: +1.5GB</div>
+                </div>
+                <div class="backup-item">
+                    <h3>🟢 Backup Differenziale</h3>
+                    <p><strong>Caratteristiche:</strong> Copia i file modificati dall'ULTIMO backup completo</p>
+                    <p><strong>Vantaggi:</strong> Ripristino più veloce dell'incrementale</p>
+                    <p><strong>Svantaggi:</strong> Dimensioni crescenti nel tiempo</p>
+                    <p><strong>Frequenza:</strong> Giornaliera o ogni 2-3 giorni</p>
+                    <div class="example">Martedì: 2GB, Mercoledì: 3.5GB</div>
+                </div>
+            </div>
+            <div class="highlight-box">
+                <h3>📊 Confronto Rapido:</h3>
+                <p><strong>Completo:</strong> Tutto sempre | <strong>Incrementale:</strong> Solo le novità | <strong>Differenziale:</strong> Tutto dal completo</p>
+            </div>
+        </div>
+
+        <!-- Users Slide -->
+        <div id="users" class="slide">
+            <h2>👤 Creazione Utenti in Windows</h2>
+            <div class="step-grid">
+                <div class="step" data-step="1">
+                    <h3>⚙️ Pannello di Controllo</h3>
+                    <p>Account Utente → Gestisci un altro account → Aggiungi nuovo utente</p>
+                </div>
+                <div class="step" data-step="2">
+                    <h3>💻 Impostazioni Windows</h3>
+                    <p>Impostazioni → Account → Famiglia e altri utenti → Aggiungi un altro utente</p>
+                </div>
+                <div class="step" data-step="3">
+                    <h3>🔧 Gestione Computer</h3>
+                    <p>Utenti e gruppi locali → Utenti → Nuovo utente (click destro)</p>
+                </div>
+                <div class="step" data-step="4">
+                    <h3>⌨️ Command Prompt</h3>
+                    <p>cmd → net user [nome] [password] /add</p>
+                </div>
+            </div>
+            
+            <div class="installation-steps">
+                <h3>🔐 Tipi di Account:</h3>
+                <div class="installation-step">
+                    <h4>Administrator</h4>
+                    <p>Controllo completo del sistema, installazione software, modifica impostazioni critiche</p>
+                </div>
+                <div class="installation-step">
+                    <h4>Standard User</h4>
+                    <p>Utilizzo normale, non può installare software o modificare impostazioni di sistema</p>
+                </div>
+                <div class="installation-step">
+                    <h4>Guest</h4>
+                    <p>Accesso limitato e temporaneo, nessuna personalizzazione permanente</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Windows Installation Slide -->
+        <div id="windows-install" class="slide">
+            <h2>💻 Installazione Windows 10</h2>
+            <div class="installation-steps">
+                <div class="installation-step">
+                    <h4>Preparazione Media</h4>
+                    <p>Scaricare Windows 10 Media Creation Tool, creare USB bootable (almeno 8GB)</p>
+                </div>
+                <div class="installation-step">
+                    <h4>Configurazione BIOS/UEFI</h4>
+                    <p>Accedere al BIOS, impostare boot priority su USB, abilitare UEFI se necessario</p>
+                </div>
+                <div class="installation-step">
+                    <h4>Avvio Installazione</h4>
+                    <p>Boot da USB, selezionare lingua, formato ora e valuta, layout tastiera</p>
+                </div>
+                <div class="installation-step">
+                    <h4>Partizionamento</h4>
+                    <p>Selezionare disco, creare/eliminare partizioni, formattare in NTFS</p>
+                </div>
+                <div class="installation-step">
+                    <h4>Installazione Sistema</h4>
+                    <p>Copia file, installazione funzionalità, riavvii automatici (20-45 minuti)</p>
+                </div>
+                <div class="installation-step">
+                    <h4>Configurazione Iniziale</h4>
+                    <p>Account Microsoft/locale, PIN, privacy, Cortana, aggiornamenti</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Office Installation Slide -->
+        <div id="office-install" class="slide">
+            <h2>📊 Installazione Microsoft Office</h2>
+            <div class="step-grid">
+                <div class="step" data-step="1">
+                    <h3>🌐 Abbonamento Office 365</h3>
+                    <p>Login su office.com → Installa Office → Scarica ed esegui installer</p>
+                </div>
+                <div class="step" data-step="2">
+                    <h3>💿 Licenza Perpetua</h3>
+                    <p>Inserire product key → Scaricare da account Microsoft → Installazione offline</p>
+                </div>
+                <div class="step" data-step="3">
+                    <h3>🏢 Distribuzione Aziendale</h3>
+                    <p>Office Deployment Tool → File XML configurazione → Installazione silenziosa</p>
+                </div>
+            </div>
+
+            <div class="installation-steps">
+                <h3>⚙️ Processo di Installazione:</h3>
+                <div class="installation-step">
+                    <h4>Download</h4>
+                    <p>Scaricare Office installer (Click-to-Run), circa 3-4GB</p>
+                </div>
+                <div class="installation-step">
+                    <h4>Installazione</h4>
+                    <p>Esecuzione automatica, installazione delle applicazioni selezionate</p>
+                </div>
+                <div class="installation-step">
+                    <h4>Attivazione</h4>
+                    <p>Login con account Microsoft, inserimento product key se richiesto</p>
+                </div>
+                <div class="installation-step">
+                    <h4>Configurazione</h4>
+                    <p>Primo avvio applicazioni, configurazione tema, sincronizzazione impostazioni</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Backup Restore Slide -->
+        <div id="backup-restore" class="slide">
+            <h2>🔄 Ripristino da Backup</h2>
+            <div class="network-diagram">
+                <div class="network-item">
+                    <h3>🔧 Ripristino Sistema</h3>
+                    <p>Pannello di Controllo → Sistema → Protezione Sistema → Ripristino Sistema</p>
+                    <div class="example">Punto di ripristino automatico</div>
+                </div>
+                <div class="network-item">
+                    <h3>📁 Cronologia File</h3>
+                    <p>Impostazioni → Aggiornamento e Sicurezza → Backup → Ripristina file</p>
+                    <div class="example">Versioni precedenti file</div>
+                </div>
+                <div class="network-item">
+                    <h3>💾 Backup Completo</h3>
+                    <p>Pannello di Controllo → Sistema → Backup e Ripristino → Ripristina file</p>
+                    <div class="example">Immagine sistema completa</div>
+                </div>
+            </div>
+
+            <div class="installation-steps">
+                <h3>🚨 Procedura di Emergenza:</h3>
+                <div class="installation-step">
+                    <h4>Boot da USB Recovery</h4>
+                    <p>Creare disco di ripristino, boot da USB, accesso a strumenti ripristino</p>
+                </div>
+                <div class="installation-step">
+                    <h4>Ripristino Automatico</h4>
+                    <p>Windows tenta riparazione automatica, diagnosi problemi avvio</p>
+                </div>
+                <div class="installation-step">
+                    <h4>Ripristino Manuale</h4>
+                    <p>Prompt comandi, sfc /scannow, chkdsk, bootrec /fixboot</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Network Configuration Slide -->
+        <div id="network-config" class="slide">
+            <h2>⚙️ Configurazione Rete Domestica</h2>
+            
+            <div class="step-grid">
+                <div class="step" data-step="1">
+                    <h3>🌐 Router Setup</h3>
+                    <p>192.168.1.1 → Admin panel → Configurazione guidata → SSID e Password</p>
+                </div>
+                <div class="step" data-step="2">
+                    <h3>🔒 Sicurezza WiFi</h3>
+                    <p>WPA3/WPA2 → Password complessa → Disabilitare WPS → Guest Network</p>
+                </div>
+                <div class="step" data-step="3">
+                    <h3>📱 Connessione Dispositivi</h3>
+                    <p>WiFi Settings → Seleziona rete → Inserisci password → Connetti automaticamente</p>
+                </div>
+                <div class="step" data-step="4">
+                    <h3>🖥️ IP Statico</h3>
+                    <p>Proprietà scheda → TCP/IPv4 → Usa indirizzo IP specifico</p>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h3>🔧 Configurazione Tipica Rete Domestica:</h3>
+                <p><strong>Router IP:</strong> 192.168.1.1 | <strong>Subnet:</strong> 255.255.255.0 | <strong>DHCP Range:</strong> 192.168.1.2-254</p>
+                <p><strong>DNS Primario:</strong> 8.8.8.8 | <strong>DNS Secondario:</strong> 8.8.4.4</p>
+            </div>
+
+            <div class="installation-steps">
+                <h3>🔍 Risoluzione Problemi:</h3>
+                <div class="installation-step">
+                    <h4>ipconfig /release /renew</h4>
+                    <p>Rilascia e rinnova indirizzo IP automatico</p>
+                </div>
+                <div class="installation-step">
+                    <h4>ping 8.8.8.8</h4>
+                    <p>Testa connettività Internet</p>
+                </div>
+                <div class="installation-step">
+                    <h4>nslookup google.com</h4>
+                    <p>Verifica funzionamento DNS</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="top-button" onclick="scrollToTop()">↑</button>
+
+    <script>
+        function toggleMenu() {
+            const hamburger = document.querySelector('.hamburger');
+            const navMenu = document.querySelector('.nav-menu');
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        }
+
+        function showSlide(slideId) {
+            // Hide all slides
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => slide.classList.remove('active'));
+            
+            // Show selected slide
+            document.getElementById(slideId).classList.add('active');
+            
+            // Close menu
+            const hamburger = document.querySelector('.hamburger');
+            const navMenu = document.querySelector('.nav-menu');
+            hamburger.classList.remove('active');
+            navMenu.classList.remove('active');
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function goHome() {
+            showSlide('home');
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Show/hide scroll to top button
+        window.addEventListener('scroll', function() {
+            const topButton = document.querySelector('.top-button');
+            if (window.scrollY > 300) {
+                topButton.classList.add('visible');
+            } else {
+                topButton.classList.remove('visible');
+            }
+        });
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show home slide by default
+            showSlide('home');
+        });
+    </script>
+</body>
+</html>
